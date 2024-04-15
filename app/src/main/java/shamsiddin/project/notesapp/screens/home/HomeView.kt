@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +49,7 @@ fun HomeView(homeViewModel: HomeViewModel){
 //    val category = Category(-1, "All")
 //    val selectedCategory by remember { mutableStateOf(category) }
 //    val filtredNotes by remember { mutableStateOf(appDataBase.getDao().getNotesByCategory(selectedCategory))  }
+    val list =  homeViewModel.allNotes.observeAsState().value!!
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -83,8 +85,8 @@ fun HomeView(homeViewModel: HomeViewModel){
                 LazyColumn(modifier = Modifier
                     .fillMaxSize()
                     .background(Grey_Primary)) {
-                    items(homeViewModel.allNotes.value!!){
-                        NoteItem(note = it, (it==homeViewModel.allNotes.value!!.last()), homeViewModel)
+                    items(list){
+                        NoteItem(note = it, (it==list.last()), homeViewModel)
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -127,8 +129,11 @@ fun NoteItem(note: Note, last: Boolean, homeViewModel: HomeViewModel){
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(text = note.timeDate, fontSize = 12.sp, maxLines = 1, color = Color.Gray)
             }
-            IconButton(onClick = { homeViewModel.deleteButton(note) }, modifier = Modifier.align(
-                Alignment.CenterEnd).padding(end = 10.dp)) {
+            IconButton(onClick = { homeViewModel.deleteButton(note) }, modifier = Modifier
+                .align(
+                    Alignment.CenterEnd
+                )
+                .padding(end = 10.dp)) {
                 Icon(imageVector = Icons.Outlined.Delete, contentDescription = "", modifier = Modifier.size(height = 40.dp, width = 30.dp))
             }
         }
